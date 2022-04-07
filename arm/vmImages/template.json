@@ -1,0 +1,84 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "galleryName": {
+            "type": "String"
+        },
+        "location": {
+            "type": "String"
+        },
+        "imageDefinitionName": {
+            "type": "string"
+        },
+        "publisher": {
+            "type": "string"
+        },
+        "offer": {
+            "type": "string"
+        },
+        "sku": {
+            "type": "string"
+        },
+        "minRecommendedvCPUs": {
+            "type": "int"
+        },
+        "maxRecommendedvCPUs": {
+            "type": "int"
+        },
+        "minRecommendedMemory": {
+            "type": "int"
+        },
+        "maxRecommendedMemory": {
+            "type": "int"
+        },
+        "hyperVGeneration": {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/galleries",
+            "apiVersion": "2019-03-01",
+            "name": "[parameters('galleryName')]",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Compute/galleries/images",
+            "name": "[concat(parameters('galleryName'), '/', parameters('imageDefinitionName'))]",
+            "apiVersion": "2021-07-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "osType": "Linux",
+                "osState": "Generalized",
+                "identifier": {
+                    "publisher": "[parameters('publisher')]",
+                    "offer": "[parameters('offer')]",
+                    "sku": "[parameters('sku')]"
+                },
+                "recommended": {
+                    "vCPUs": {
+                        "min": "[parameters('minRecommendedvCPUs')]",
+                        "max": "[parameters('maxRecommendedvCPUs')]"
+                    },
+                    "memory": {
+                        "min": "[parameters('minRecommendedMemory')]",
+                        "max": "[parameters('maxRecommendedMemory')]"
+                    }
+                },
+                "hyperVGeneration": "[parameters('hyperVGeneration')]"
+            },
+            "tags": {}
+        },
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2018-05-01",
+            "location": "[parameters('Location')]",
+            "name": "packerVirtualMachineImages",
+            "properties": {}
+        }
+    ]
+}

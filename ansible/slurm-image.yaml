@@ -1,0 +1,89 @@
+---
+- name: Base configuration
+  hosts: all
+  become: true
+
+  tasks:
+  - name: Get current date and time
+    ansible.builtin.command: date
+    register: date_command
+    changed_when: false
+
+  - name: Create release file
+    ansible.builtin.copy:
+      dest: /etc/azure-slurm-release
+      mode: 0644
+      owner: root
+      group: root
+      content: |
+        BUILD_DATE={{ date_command.stdout }}
+
+  - name: Install packages
+    ansible.builtin.package:
+      name:
+        - sudo
+        - vim
+        - tmux
+        - zsh
+        - rsync
+        - tcpdump
+        - gnupg2
+
+  - name: Disable swap on boot
+    ansible.builtin.lineinfile:
+      path: /etc/fstab
+      regexp: '\s+swap\s+'
+      state: absent
+      backup: true
+
+  - name: Ensure /var/log/journal exists
+    ansible.builtin.file:
+      path: /var/log/journal
+      owner: root
+      group: systemd-journal
+      state: directory
+      mode: 02755
+
+  - name: Add key for Ansible repo
+    ansible.builtin.apt_key:
+      keyserver: keyserver.ubuntu.com
+      id: 93C4A3FD7BB9C367
+  
+  - name: Add Ansible repo
+    ansible.builtin.copy:
+      dest: /etc/apt/sources.list.d/ansible.list
+      owner: root
+      group: root
+      mode: 0644
+      content: |
+        deb http://ppa.launchpad.net/ansible/ansible/ubuntu focal main
+  
+  - name: Install Ansible
+    ansible.builtin.apt:
+      name: ansible
+      update_cache: true
+
+  - name: Install Slurm packages
+    ansible.builtin.package:
+      name:
+        - slurm-wlm
+        - slurm-wlm-basic-plugins
+        - slurm-wlm-basic-plugins-dev
+        - slurm-wlm-doc
+        - slurm-wlm-torque
+        - slurmrestd
+        - libpam-slurm
+        - libslurm-dev
+        - libslurm-perl
+        - mariadb-server
+        - mariadb-client
+      state: present
+
+  - name: Disable Slurm daemons
+    ansible.builtin.service:
+      name: "{{ item }}"
+      enabled: false
+    loop:
+      - slurmd
+      - slurmctld
+      - slurmrestd

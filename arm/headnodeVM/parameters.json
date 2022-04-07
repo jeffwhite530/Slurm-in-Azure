@@ -1,0 +1,71 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus2"
+        },
+        // Cluster objects will be named based on the cluster name. Use a-z, 0-9, and dashes only.
+        "clusterName": {
+            "value": "test-cluster"
+        },
+        "networkSecurityGroupRules": {
+            "value": [
+                {
+                    "name": "default-allow-ssh",
+                    "properties": {
+                        "priority": 500,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceApplicationSecurityGroups": [],
+                        "destinationApplicationSecurityGroups": [],
+                        "sourceAddressPrefix": "71.112.204.20",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "22"
+                    }
+                }
+            ]
+        },
+        "subnetName": {
+            "value": "main"
+        },
+        "addressPrefixes": {
+            "value": [
+                "10.200.0.0/22"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "main",
+                    "properties": {
+                        "addressPrefix": "10.200.0.0/24"
+                    }
+                }
+            ]
+        },
+        "publicIpAddressType": {
+            "value": "Static"
+        },
+        "osDiskType": {
+            "value": "StandardSSD_LRS"
+        },
+        "virtualMachineSpotInstance": {
+            "value": true
+        },
+        "virtualMachineSourceIsMarketplace": {
+            "value": false
+        },
+        "virtualMachineSize": {
+            "value": "Standard_E2bs_v5"
+        },
+        "adminUsername": {
+            "value": "jeffwhite"
+        },
+        "adminPublicKey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC60phmlZPN3l+73auqWjOTLzNXGe4mILMdsTnnYmRaE8XXgCSlUMfqBWQwyB3oVNWgttI/6htCrbvtZgW2/6rs57pzF27QwOLB9uijha2Sm3SpKfOATXny3ypganh8Mqd4y31MvNwLqEoUNM6324O7T/2sQwGGMJdN1FvtAwbgTpNNyo57W6iM6KkcKTT08Hl7lNtTf4qtPm0qK2vMvMrQPe4Qx/qaq9uP2+KKIGt2lj9rrhE022XB1jtjecYH675aScXcx3N8MWuaN5ETyPNzt1Skwa58iSy8CTizoHhw+zh/o+xhzlmx8GJ1ilKYz8bsaS6CDD4HqMU4YcGgJlM2dYdo4S5kUIFrv4UO8315FU1bazNEmNkPDxOzRFEMupGWXNIBw3FD0BhJOH+eGJhl3RYUNzFoJLkJXh1AkErhd0aanj1n4e4+yVlve+sKAuqWktqa1+9hDzBxHDa9aKw2R3qRahQ88WzJfyiJPf9m7XoS2zwxK0Jni+5Rq1qqzFs="
+        }
+    }
+}
