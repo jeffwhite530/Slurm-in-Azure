@@ -71,10 +71,12 @@
         - slurm-wlm-basic-plugins-dev
         - slurm-wlm-doc
         - slurm-wlm-torque
+        - slurmdbd
         - slurmrestd
         - libpam-slurm
         - libslurm-dev
         - libslurm-perl
+        - munge
         - mariadb-server
         - mariadb-client
       state: present
@@ -83,7 +85,17 @@
     ansible.builtin.service:
       name: "{{ item }}"
       enabled: false
+      state: stopped
     loop:
       - slurmd
       - slurmctld
+      - slurmdbd
       - slurmrestd
+      - mariadb
+      - munge
+
+  - name: Upgrade all other packages
+    ansible.builtin.command: apt upgrade -y
+
+  - name: Remove apt cache
+    ansible.builtin.command: apt-get clean
