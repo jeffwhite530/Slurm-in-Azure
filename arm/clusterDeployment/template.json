@@ -59,7 +59,7 @@
         "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
         // Change variables below here as needed:
         "imgRefComputeGallery": {
-            "id": "/subscriptions/8251e869-3bec-4d80-a8ba-959e8caffb89/resourceGroups/Stuff/providers/Microsoft.Compute/galleries/vmImages/images/debian-11-slurm-20/versions/0.0.3"
+            "id": "/subscriptions/8251e869-3bec-4d80-a8ba-959e8caffb89/resourceGroups/Stuff/providers/Microsoft.Compute/galleries/vmImages/images/debian-11-slurm-20/versions/0.0.4"
         },
         "imgRefMarketplace": {
             "publisher": "debian",
@@ -67,7 +67,7 @@
             "sku": "11-gen2",
             "version": "latest"
         },
-        "slurmConfigURI": "https://jealwhslurmconfig.blob.core.windows.net/ansible/slurm-config.yaml?sp=r&st=2022-04-07T23:11:41Z&se=2023-04-08T07:11:41Z&spr=https&sv=2020-08-04&sr=b&sig=fHgMB%2FTfxsGsL2cGUbfAUGHAiIs0XwOPhWApHSY8xX8%3D"
+        "clusterConfigURI": "https://jealwhslurmconfig.blob.core.windows.net/ansible/cluster-headvm-config.yaml?sp=r&st=2022-04-09T19:28:02Z&se=2023-04-10T03:28:02Z&spr=https&sv=2020-08-04&sr=b&sig=d2wI9Uwnn61b6F%2B8GvKbXmxH0R2196bFxnFEoJrF0Ig%3D"
     },
     "resources": [
         {
@@ -214,7 +214,7 @@
             ]
         },
         {
-            "name": "[concat(variables('headVMName'), '/slurm-config')]",
+            "name": "[concat(variables('headVMName'), '/cluster-config')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[resourceGroup().location]",
             "apiVersion": "2019-03-01",
@@ -232,9 +232,9 @@
                     "timestamp": 123
                 },
                 "protectedSettings": {
-                    "commandToExecute": "ansible-playbook -i 127.0.0.1, --limit 127.0.0.1 --connection=local ./slurm-config.yaml",
+                    "commandToExecute": "hostname | grep -q -- '-headvm-' && ansible-playbook -i 127.0.0.1, --limit 127.0.0.1 --connection=local ./cluster-headvm-config.yaml",
                     "fileUris": [
-                        "[variables('slurmConfigURI')]"
+                        "[variables('clusterConfigURI')]"
                     ]
                 }
             }
