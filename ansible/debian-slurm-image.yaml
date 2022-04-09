@@ -135,7 +135,7 @@
 
   - name: Give deployment user sudo privileges
     ansible.builtin.copy:
-      dest: /etc/sudoers.d/nopasswd
+      dest: /etc/sudoers.d/deploy_user
       mode: 0600
       owner: root
       group: root
