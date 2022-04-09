@@ -28,6 +28,7 @@
         - rsync
         - tcpdump
         - gnupg2
+        - jq
 
   - name: Disable swap on boot
     ansible.builtin.lineinfile:
@@ -93,6 +94,51 @@
       - slurmrestd
       - mariadb
       - munge
+
+  - name: Create deploy group
+    ansible.builtin.group:
+      name: deploy_user
+      gid: 980
+
+  - name: Create deployment user
+    ansible.builtin.user:
+      name: deploy_user
+      uid: 1001
+      group: deploy_user
+      shell: /bin/bash
+
+  - name: Create .ssh directory for deployment user
+    ansible.builtin.file:
+      path: /home/deploy_user/.ssh
+      mode: 0700
+      owner: deploy_user
+      group: deploy_user
+      state: directory
+
+  - name: Create deployment user's SSH keys
+    community.crypto.openssh_keypair:
+      path: /home/deploy_user/.ssh/id_rsa
+      owner: deploy_user
+      group: deploy_user
+    register: deployment_user_ssh_keys
+
+  - name: Create deployment user's authorized_keys
+    ansible.builtin.copy:
+      dest: /home/deploy_user/.ssh/authorized_keys
+      mode: 0600
+      owner: deploy_user
+      group: deploy_user
+      content: |
+        {{ deployment_user_ssh_keys.public_key }}
+
+  - name: Give deployment user sudo privileges
+    ansible.builtin.copy:
+      dest: /etc/sudoers.d/nopasswd
+      mode: 0600
+      owner: root
+      group: root
+      content: |
+        %deploy_user ALL=(ALL) NOPASSWD: ALL
 
   - name: Upgrade all other packages
     ansible.builtin.command: apt upgrade -y
