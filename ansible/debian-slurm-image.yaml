@@ -80,6 +80,8 @@
         - munge
         - mariadb-server
         - mariadb-client
+        - python3-pymysql
+        - mailutils
       state: present
 
   - name: Disable Slurm daemons
