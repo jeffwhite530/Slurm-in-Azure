@@ -68,7 +68,7 @@
         "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', variables('vnetName'))]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
         "headVMName": "[concat(parameters('clusterName'), '-headvm-', uniqueString(guid(resourceGroup().id)))]",
-        "headVMOSDiskName": "[concat(parameters('clusterName'), '-headvm-osDisk-', uniqueString(guid(resourceGroup().id)))]",
+        "headVMOSDiskName": "[concat(parameters('clusterName'), '-headvm-osdisk-', uniqueString(guid(resourceGroup().id)))]",
         "headVMNICName": "[concat(parameters('clusterName'), '-headvm-nic-', uniqueString(guid(resourceGroup().id)))]",
         "headVMPublicIPAddressName": "[concat(parameters('clusterName'), '-headvm-publicip-', uniqueString(guid(resourceGroup().id)))]",
         "diagnosticsStorageAccountName": "[concat('diagsa', uniqueString(guid(resourceGroup().id)))]",
@@ -303,7 +303,7 @@
                 },
                 "storageProfile": {
                     "osDisk": {
-                        "name": "[concat(parameters('clusterName'), '-computevm', copyIndex(), '-osDisk-', uniqueString(guid(resourceGroup().id)))]",
+                        "name": "[concat(parameters('clusterName'), '-computevm', copyIndex(), '-osdisk-', uniqueString(guid(resourceGroup().id)))]",
                         "createOption": "fromImage",
                         "managedDisk": {
                             "storageAccountType": "[parameters('computeVMOSDiskType')]"
