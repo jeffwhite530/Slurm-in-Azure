@@ -43,17 +43,8 @@
                     "properties": {
                         "addressPrefix": "10.200.0.0/24"
                     }
-                },
-                {
-                    "name": "computeNodes",
-                    "properties": {
-                        "addressPrefix": "10.200.1.0/24"
-                    }
                 }
             ]
-        },
-        "headVMOSDiskType": {
-            "value": "StandardSSD_LRS"
         },
         "headVMIsSpotInstance": {
             "value": true
@@ -63,6 +54,12 @@
         },
         "headVMSize": {
             "value": "Standard_E2bs_v5"
+        },
+        "computeVMSize": {
+            "value": "Standard_E2bs_v5"
+        },
+        "computeVMCount": {
+            "value": 1
         },
         "adminUsername": {
             "value": "jeffwhite"

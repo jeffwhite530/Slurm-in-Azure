@@ -4,6 +4,7 @@
     // TODO: Add a DNS name for the VM
     // Automate the creatation of the diagnostic storage account and its name
     "parameters": {
+        // TODO: Support putting the VMs in a placement group.
         "location": {
             "type": "string"
         },
@@ -34,6 +35,22 @@
         "headVMSize": {
             "type": "string",
             "defaultValue": "Standard_E2bs_v5"
+        },
+        "computeVMOSDiskType": {
+            "type": "string",
+            "defaultValue": "StandardSSD_LRS"
+        },
+        "computeVMIsSpotInstance": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "computeVMSize": {
+            "type": "string",
+            "defaultValue": "Standard_E2bs_v5"
+        },
+        "computeVMCount": {
+            "type": "int",
+            "defaultValue": "0"
         },
         "virtualMachineSourceIsMarketplace": {
             "type": "bool",
@@ -102,6 +119,38 @@
                 "networkSecurityGroup": {
                     "id": "[variables('nsgId')]"
                 }
+            }
+        },
+        {
+            "name": "[concat(parameters('clusterName'), '-computevm', copyIndex(),'-nic-', uniqueString(guid(resourceGroup().id)))]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2021-03-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic"
+                        }
+                    }
+                ],
+                "enableAcceleratedNetworking": true,
+                "networkSecurityGroup": {
+                    "id": "[variables('nsgId')]"
+                }
+            },
+            "copy": {
+                "name": "computeNICLoop",
+                "count": "[parameters('computeVMCount')]",
+                "mode": "parallel"
             }
         },
         {
@@ -240,6 +289,81 @@
             }
         },
         {
+            "name": "[concat(parameters('clusterName'), '-computevm', copyIndex(), '-', uniqueString(guid(resourceGroup().id)))]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-07-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('clusterName'), '-computevm', copyIndex(),'-nic-', uniqueString(guid(resourceGroup().id)))]",
+                "[concat('Microsoft.Storage/storageAccounts/', variables('diagnosticsStorageAccountName'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('computeVMSize')]"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "name": "[concat(parameters('clusterName'), '-computevm', copyIndex(), '-osDisk-', uniqueString(guid(resourceGroup().id)))]",
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('computeVMOSDiskType')]"
+                        },
+                        "deleteOption": "Delete"
+                    },
+                    "imageReference": "[if(parameters('virtualMachineSourceIsMarketplace'),
+                        variables('imgRefMarketplace'),
+                        variables('imgRefComputeGallery')
+                    )]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('clusterName'), '-computevm', copyIndex(),'-nic-', uniqueString(guid(resourceGroup().id))))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[concat(parameters('clusterName'), '-computevm', copyIndex(), uniqueString(guid(resourceGroup().id)))]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                                    "keyData": "[parameters('adminPublicKey')]"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "priority": "[if(parameters('computeVMIsSpotInstance'),
+                    'Spot',
+                    'Regular'
+                )]",
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('https://', variables('diagnosticsStorageAccountName'), '.blob.core.windows.net/')]"
+                    }
+                }
+            },
+            "identity": {
+                "type": "systemAssigned"
+            },
+            "zones": [
+                "1"
+            ],
+            "copy": {
+                "name": "computeVMLoop",
+                "count": "[parameters('computeVMCount')]",
+                "mode": "parallel"
+            }
+        },
+        {
             "name": "[variables('diagnosticsStorageAccountName')]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2019-06-01",
@@ -253,7 +377,6 @@
             }
         }
     ],
-    // TODO: Only output the VM's DNS name
     "outputs": {
         "adminUsername": {
             "type": "string",
