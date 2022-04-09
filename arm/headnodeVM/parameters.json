@@ -43,22 +43,25 @@
                     "properties": {
                         "addressPrefix": "10.200.0.0/24"
                     }
+                },
+                {
+                    "name": "computeNodes",
+                    "properties": {
+                        "addressPrefix": "10.200.1.0/24"
+                    }
                 }
             ]
         },
-        "publicIpAddressType": {
-            "value": "Static"
-        },
-        "osDiskType": {
+        "headVMOSDiskType": {
             "value": "StandardSSD_LRS"
         },
-        "virtualMachineSpotInstance": {
+        "headVMIsSpotInstance": {
             "value": true
         },
         "virtualMachineSourceIsMarketplace": {
             "value": false
         },
-        "virtualMachineSize": {
+        "headVMSize": {
             "value": "Standard_E2bs_v5"
         },
         "adminUsername": {
