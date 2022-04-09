@@ -97,6 +97,36 @@
       - mariadb
       - munge
 
+  - name: Create systemd configuration directories for Slurm daemons
+    ansible.builtin.file:
+      dest: "/etc/systemd/system/{{ item }}.service.d"
+      owner: root
+      group: root
+      mode: 0644
+      state: directory
+    loop:
+      - munge
+      - mariadb
+      - slurmdbd
+      - slurmctld
+      - slurmrestd
+      - slurmd
+
+  - name: Create systemd unit override files for Slurm daemons
+    ansible.builtin.copy:
+      dest: "/etc/systemd/system/{{ item }}.service.d/overrides.conf"
+      content: |
+        [Service]
+        Restart=on-failure
+    loop:
+      - munge
+      - mariadb
+      - slurmdbd
+      - slurmctld
+      - slurmrestd
+      - slurmd
+    notify: Restart systemd
+
   - name: Create deploy group
     ansible.builtin.group:
       name: deploy_user
@@ -147,3 +177,8 @@
 
   - name: Remove apt cache
     ansible.builtin.command: apt-get clean
+
+  handlers:
+  - name: Restart systemd
+    ansible.builtin.service:
+      daemon_reload: true
