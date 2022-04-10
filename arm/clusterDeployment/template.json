@@ -327,7 +327,7 @@
                     ]
                 },
                 "osProfile": {
-                    "computerName": "[concat(parameters('clusterName'), '-computevm', copyIndex(), uniqueString(guid(resourceGroup().id)))]",
+                    "computerName": "[concat(parameters('clusterName'), '-computevm', copyIndex(), '-', uniqueString(guid(resourceGroup().id)))]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "linuxConfiguration": {
                         "disablePasswordAuthentication": true,
