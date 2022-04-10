@@ -1,5 +1,5 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
@@ -72,7 +72,7 @@
         "networkSecurityGroupName": "[concat(parameters('clusterName'), '-nsg-', uniqueString(guid(resourceGroup().id)))]",
         "nsgId": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
         "clusterParameters": "[union(deployment().properties.parameters, deployment().properties.template.parameters)]",
-        "diagStorageAccountURI": "[uri(concat('https://', variables('diagnosticsStorageAccountName'), '.blob.core.windows.net'), '/')]",
+        "diagStorageAccountURI": "[uri(concat('https://', variables('diagnosticsStorageAccountName'), '.blob.', environment().suffixes.storage), '/')]",
         // Change variables below here as needed:
         "imgRefComputeGallery": {
             "id": "/subscriptions/8251e869-3bec-4d80-a8ba-959e8caffb89/resourceGroups/Stuff/providers/Microsoft.Compute/galleries/vmImages/images/debian-11-slurm-20/versions/0.0.6"
@@ -83,7 +83,7 @@
             "sku": "11-gen2",
             "version": "latest"
         },
-        "clusterBootrapZipURI": "https://jealwhslurmconfig.blob.core.windows.net/ansible/cluster-bootstrap.zip?sp=r&st=2022-04-10T01:27:10Z&se=2023-04-10T09:27:10Z&spr=https&sv=2020-08-04&sr=b&sig=1sim3aCcDdRA2PafH0jAY%2BDNjS2vrnJPWc3qI0%2FKVTU%3D"
+        "clusterBootrapZipURI": "[uri(concat('https://jealwhslurmconfig.', environment().suffixes.storage), '/ansible/cluster-bootstrap.zip?sp=r&st=2022-04-10T01:27:10Z&se=2023-04-10T09:27:10Z&spr=https&sv=2020-08-04&sr=b&sig=1sim3aCcDdRA2PafH0jAY%2BDNjS2vrnJPWc3qI0%2FKVTU%3D')]"
     },
     "resources": [
         {
