@@ -62,8 +62,7 @@
     },
     "variables": {
         "vnetName": "[concat(parameters('clusterName'), '-vnet-', uniqueString(guid(resourceGroup().id)))]",
-        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), parameters('subnetName'))]",
         "headVMName": "[concat(parameters('clusterName'), '-headvm-', uniqueString(guid(resourceGroup().id)))]",
         "headVMOSDiskName": "[concat(parameters('clusterName'), '-headvm-osdisk-', uniqueString(guid(resourceGroup().id)))]",
         "headVMNICName": "[concat(parameters('clusterName'), '-headvm-nic-', uniqueString(guid(resourceGroup().id)))]",
@@ -75,7 +74,7 @@
         "diagStorageAccountURI": "[uri(concat('https://', variables('diagnosticsStorageAccountName'), '.blob.', environment().suffixes.storage), '/')]",
         // Change variables below here as needed:
         "imgRefComputeGallery": {
-            "id": "/subscriptions/8251e869-3bec-4d80-a8ba-959e8caffb89/resourceGroups/Stuff/providers/Microsoft.Compute/galleries/vmImages/images/debian-11-slurm-20/versions/0.0.6"
+            "id": "[resourceId('8251e869-3bec-4d80-a8ba-959e8caffb89', 'Stuff', 'Microsoft.Compute/galleries/images/versions', 'vmImages', 'debian-11-slurm-20', '0.0.6')]"
         },
         "imgRefMarketplace": {
             "publisher": "debian",
