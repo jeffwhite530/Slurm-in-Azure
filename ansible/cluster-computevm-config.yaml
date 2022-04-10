@@ -11,6 +11,9 @@
     ansible.builtin.copy:
       dest: /etc/munge/munge.key
       src: /etc/munge/munge.key
+      owner: munge
+      group: munge
+      mode: 0600
     notify: Restart munge
 
   - name: Start munge
@@ -56,12 +59,12 @@
       enabled: true
 
   handlers:
-  - name: Restart munge
-    ansible.builtin.service:
-      name: munge
-      state: restarted
+    - name: Restart munge
+      ansible.builtin.service:
+        name: munge
+        state: restarted
 
-  - name: Restart slurmd
-    ansible.builtin.service:
-      name: slurmd
-      state: restarted
+    - name: Restart slurmd
+      ansible.builtin.service:
+        name: slurmd
+        state: restarted
