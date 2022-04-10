@@ -67,6 +67,7 @@
         "diagnosticsStorageAccountName": "[concat('diagsa', uniqueString(guid(resourceGroup().id)))]",
         "networkSecurityGroupName": "[concat(parameters('clusterName'), '-nsg-', uniqueString(guid(resourceGroup().id)))]",
         "nsgId": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
+        "proximityPlacementGroupName": "[concat(parameters('clusterName'), '-ppg-', uniqueString(guid(resourceGroup().id)))]",
         "clusterParameters": "[union(deployment().properties.parameters, deployment().properties.template.parameters)]",
         "diagStorageAccountURI": "[uri(concat('https://', variables('diagnosticsStorageAccountName'), '.blob.', environment().suffixes.storage), '/')]",
         // Change variables below here as needed:
@@ -82,6 +83,13 @@
         "clusterBootrapZipURI": "[uri(concat('https://jealwhslurmconfig.blob.', environment().suffixes.storage), '/ansible/cluster-bootstrap.zip?sp=r&st=2022-04-10T01:27:10Z&se=2023-04-10T09:27:10Z&spr=https&sv=2020-08-04&sr=b&sig=1sim3aCcDdRA2PafH0jAY%2BDNjS2vrnJPWc3qI0%2FKVTU%3D')]"
     },
     "resources": [
+        {
+            "name": "[variables('proximityPlacementGroupName')]",
+            "type": "Microsoft.Compute/proximityPlacementGroups",
+            "apiVersion": "2021-11-01",
+            "location": "[parameters('location')]",
+            "properties": {}
+        },
         {
             "name": "[variables('headVMNICName')]",
             "type": "Microsoft.Network/networkInterfaces",
@@ -200,6 +208,9 @@
                 "hardwareProfile": {
                     "vmSize": "[parameters('headVMSize')]"
                 },
+                "proximityPlacementGroup": {
+                    "id": "[resourceId('Microsoft.Compute/proximityPlacementGroups', variables('proximityPlacementGroupName'))]"
+                },
                 "storageProfile": {
                     "osDisk": {
                         "name": "[variables('headVMOSDiskName')]",
@@ -295,6 +306,9 @@
             "properties": {
                 "hardwareProfile": {
                     "vmSize": "[parameters('computeVMSize')]"
+                },
+                "proximityPlacementGroup": {
+                    "id": "[resourceId('Microsoft.Compute/proximityPlacementGroups', variables('proximityPlacementGroupName'))]"
                 },
                 "storageProfile": {
                     "osDisk": {
