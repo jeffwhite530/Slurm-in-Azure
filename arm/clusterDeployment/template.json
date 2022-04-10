@@ -11,9 +11,6 @@
         "networkSecurityGroupRules": {
             "type": "array"
         },
-        "subnetName": {
-            "type": "string"
-        },
         "addressPrefixes": {
             "type": "array"
         },
@@ -62,7 +59,7 @@
     },
     "variables": {
         "vnetName": "[concat(parameters('clusterName'), '-vnet-', uniqueString(guid(resourceGroup().id)))]",
-        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), parameters('subnetName'))]",
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), parameters('subnets')[0].name)]",
         "headVMName": "[concat(parameters('clusterName'), '-headvm-', uniqueString(guid(resourceGroup().id)))]",
         "headVMOSDiskName": "[concat(parameters('clusterName'), '-headvm-osdisk-', uniqueString(guid(resourceGroup().id)))]",
         "headVMNICName": "[concat(parameters('clusterName'), '-headvm-nic-', uniqueString(guid(resourceGroup().id)))]",

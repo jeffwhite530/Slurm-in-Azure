@@ -28,9 +28,6 @@
                 }
             ]
         },
-        "subnetName": {
-            "value": "main"
-        },
         "addressPrefixes": {
             "value": [
                 "10.200.0.0/22"
