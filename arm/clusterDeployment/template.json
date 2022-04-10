@@ -62,7 +62,7 @@
     },
     "variables": {
         "vnetName": "[concat(parameters('clusterName'), '-vnet-', uniqueString(guid(resourceGroup().id)))]",
-        "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
         "headVMName": "[concat(parameters('clusterName'), '-headvm-', uniqueString(guid(resourceGroup().id)))]",
         "headVMOSDiskName": "[concat(parameters('clusterName'), '-headvm-osdisk-', uniqueString(guid(resourceGroup().id)))]",
@@ -70,7 +70,7 @@
         "headVMPublicIPAddressName": "[concat(parameters('clusterName'), '-headvm-publicip-', uniqueString(guid(resourceGroup().id)))]",
         "diagnosticsStorageAccountName": "[concat('diagsa', uniqueString(guid(resourceGroup().id)))]",
         "networkSecurityGroupName": "[concat(parameters('clusterName'), '-nsg-', uniqueString(guid(resourceGroup().id)))]",
-        "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
+        "nsgId": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
         "clusterParameters": "[union(deployment().properties.parameters, deployment().properties.template.parameters)]",
         "diagStorageAccountURI": "[uri(concat('https://', variables('diagnosticsStorageAccountName'), '.blob.core.windows.net'), '/')]",
         // Change variables below here as needed:
@@ -106,7 +106,7 @@
                             },
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIpAddress": {
-                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', variables('headVMPublicIPAddressName'))]",
+                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('headVMPublicIPAddressName'))]",
                                 "properties": {
                                     "deleteOption": "Delete"
                                 }
