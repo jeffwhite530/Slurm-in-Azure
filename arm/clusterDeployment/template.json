@@ -74,9 +74,10 @@
         "diagnosticsStorageAccountName": "[concat('diagsa', uniqueString(guid(resourceGroup().id)))]",
         "networkSecurityGroupName": "[concat(parameters('clusterName'), '-nsg-', uniqueString(guid(resourceGroup().id)))]",
         "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
+        "clusterParameters": "[union(deployment().properties.parameters, deployment().properties.template.parameters)]",
         // Change variables below here as needed:
         "imgRefComputeGallery": {
-            "id": "/subscriptions/8251e869-3bec-4d80-a8ba-959e8caffb89/resourceGroups/Stuff/providers/Microsoft.Compute/galleries/vmImages/images/debian-11-slurm-20/versions/0.0.4"
+            "id": "/subscriptions/8251e869-3bec-4d80-a8ba-959e8caffb89/resourceGroups/Stuff/providers/Microsoft.Compute/galleries/vmImages/images/debian-11-slurm-20/versions/0.0.6"
         },
         "imgRefMarketplace": {
             "publisher": "debian",
@@ -84,7 +85,7 @@
             "sku": "11-gen2",
             "version": "latest"
         },
-        "clusterConfigURI": "https://jealwhslurmconfig.blob.core.windows.net/ansible/cluster-headvm-config.yaml?sp=r&st=2022-04-09T19:28:02Z&se=2023-04-10T03:28:02Z&spr=https&sv=2020-08-04&sr=b&sig=d2wI9Uwnn61b6F%2B8GvKbXmxH0R2196bFxnFEoJrF0Ig%3D"
+        "clusterBootrapZipURI": "https://jealwhslurmconfig.blob.core.windows.net/ansible/cluster-bootstrap.zip?sp=r&st=2022-04-10T01:27:10Z&se=2023-04-10T09:27:10Z&spr=https&sv=2020-08-04&sr=b&sig=1sim3aCcDdRA2PafH0jAY%2BDNjS2vrnJPWc3qI0%2FKVTU%3D"
     },
     "resources": [
         {
@@ -281,9 +282,9 @@
                     "timestamp": 123
                 },
                 "protectedSettings": {
-                    "commandToExecute": "hostname | grep -q -- '-headvm-' && ansible-playbook -i 127.0.0.1, --limit 127.0.0.1 --connection=local ./cluster-headvm-config.yaml",
+                    "commandToExecute": "[concat(format('echo \"{0}\" > clusterParametersSingleQuotes.json', variables('clusterParameters')), ' ; ', 'unzip cluster-bootstrap.zip', ' ; ', 'bash ./scripts/cluster-bootstrap.sh')]",
                     "fileUris": [
-                        "[variables('clusterConfigURI')]"
+                        "[variables('clusterBootrapZipURI')]"
                     ]
                 }
             }

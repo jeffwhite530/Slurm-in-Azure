@@ -29,6 +29,7 @@
         - tcpdump
         - gnupg2
         - jq
+        - unzip
 
   - name: Disable swap on boot
     ansible.builtin.lineinfile:

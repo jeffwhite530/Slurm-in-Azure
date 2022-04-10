@@ -8,6 +8,14 @@ This repo contains code to deploy a Slurm cluster on Azure.
 # Removing the cluster:
   - `az group delete --name "TestRG"`
 
+# Building a new bootstrap zip:
+```
+zip cluster-bootstrap.zip \
+  scripts/cluster-bootstrap.sh \
+  ansible/cluster-headvm-config.yaml \
+  ansible/cluster-computevm-config.yaml
+```
+
 # Manually install Ansible:
 ```
 apt update && apt install -y gnupg2

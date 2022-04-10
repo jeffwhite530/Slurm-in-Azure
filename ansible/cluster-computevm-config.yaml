@@ -1,0 +1,28 @@
+---
+- name: Cluster configuration, compute nodes
+  hosts: all
+  become: true
+  remote_user: deploy_user
+
+  tasks:
+  - name: Copy munge key
+    ansible.builtin.copy:
+      dest: /etc/munge/munge.key
+      src: /etc/munge/munge.key
+
+  - name: Start munge
+    ansible.builtin.service:
+      name: munge
+      state: started
+      enabled: true
+
+  - name: Copy slurm.conf
+    ansible.builtin.copy:
+      dest: /etc/slurm/slurm.conf
+      src: /etc/slurm/slurm.conf
+
+  - name: Start slurmd
+    ansible.builtin.service:
+      name: slurmd
+      state: started
+      enabled: true
