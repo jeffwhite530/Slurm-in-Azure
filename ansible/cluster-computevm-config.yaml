@@ -3,12 +3,15 @@
   hosts: all
   become: true
   remote_user: deploy_user
+  vars:
+    ansible_ssh_private_key_file: /home/deploy_user/.ssh/id_rsa
 
   tasks:
   - name: Copy munge key
     ansible.builtin.copy:
       dest: /etc/munge/munge.key
       src: /etc/munge/munge.key
+    notify: Restart munge
 
   - name: Start munge
     ansible.builtin.service:
@@ -20,9 +23,45 @@
     ansible.builtin.copy:
       dest: /etc/slurm/slurm.conf
       src: /etc/slurm/slurm.conf
+    notify: Restart slurmd
+
+  - name: Create cgroup.conf
+    ansible.builtin.copy:
+      dest: /etc/slurm/cgroup.conf
+      owner: root
+      group: root
+      mode: 0644
+      content: |
+        CgroupAutomount=yes
+        CgroupMountpoint=/sys/fs/cgroup
+        ConstrainCores=yes
+        ConstrainDevices=yes
+        ConstrainKmemSpace=no
+        ConstrainRAMSpace=yes
+        ConstrainSwapSpace=yes
+    notify: Restart slurmd
+
+  - name: Create slurmd spool directory
+    ansible.builtin.file:
+      dest: /var/spool/slurmd
+      owner: slurm
+      group: slurm
+      mode: 0700
+      state: directory
 
   - name: Start slurmd
     ansible.builtin.service:
       name: slurmd
       state: started
       enabled: true
+
+  handlers:
+  - name: Restart munge
+    ansible.builtin.service:
+      name: munge
+      state: restarted
+
+  - name: Restart slurmd
+    ansible.builtin.service:
+      name: slurmd
+      state: restarted
