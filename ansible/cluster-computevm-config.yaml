@@ -22,12 +22,6 @@
       state: started
       enabled: true
 
-  - name: Copy slurm.conf
-    ansible.builtin.copy:
-      dest: /etc/slurm/slurm.conf
-      src: /etc/slurm/slurm.conf
-    notify: Restart slurmd
-
   - name: Create cgroup.conf
     ansible.builtin.copy:
       dest: /etc/slurm/cgroup.conf
@@ -51,6 +45,25 @@
       group: slurm
       mode: 0700
       state: directory
+
+  - name: Get Slurm node info
+    ansible.builtin.command: slurmd -C
+    register: slurm_node_info
+
+  - name: Append compute node to slurm.conf on the head node
+    ansible.builtin.lineinfile:
+      path: /etc/slurm/slurm.conf
+      line: "{{ slurm_node_info.stdout_lines[0] }}"
+    delegate_to: 127.0.0.1
+
+  - name: Push slurm.conf from head node
+    ansible.builtin.copy:
+      dest: /etc/slurm/slurm.conf
+      src: /etc/slurm/slurm.conf
+      owner: root
+      group: root
+      mode: 0644
+    notify: Restart slurmd
 
   - name: Start slurmd
     ansible.builtin.service:

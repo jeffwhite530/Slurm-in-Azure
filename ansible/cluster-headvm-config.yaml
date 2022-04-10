@@ -208,11 +208,8 @@
         # COMPUTE NODES
         PartitionName=main Nodes=ALL Default=YES MaxTime=INFINITE State=UP
 
-  - name: Add compute nodes to slurm.conf
-    ansible.builtin.lineinfile:
-      path: /etc/slurm/slurm.conf
-      line: "NodeName={{ cluster_parameters['clusterName']['value'] }}-computevm{{ item }}-{{ resource_group_guid_string }} State=UNKNOWN"
-    loop: "{{ range(0, cluster_parameters['computeVMCount']['value'])|list }}"
+  # https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt#option-2-step-by-step-installation-instructions
+  # az login --identity --allow-no-subscriptions
 
   - name: Create slurmdbd.conf
     ansible.builtin.copy:
