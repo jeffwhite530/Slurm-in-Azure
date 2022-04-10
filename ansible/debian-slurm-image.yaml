@@ -30,6 +30,7 @@
         - gnupg2
         - jq
         - unzip
+        - dnsutils
 
   - name: Disable swap on boot
     ansible.builtin.lineinfile:
