@@ -72,6 +72,7 @@
         "networkSecurityGroupName": "[concat(parameters('clusterName'), '-nsg-', uniqueString(guid(resourceGroup().id)))]",
         "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
         "clusterParameters": "[union(deployment().properties.parameters, deployment().properties.template.parameters)]",
+        "diagStorageAccountURI": "[uri(concat('https://', variables('diagnosticsStorageAccountName'), '.blob.core.windows.net'), '/')]",
         // Change variables below here as needed:
         "imgRefComputeGallery": {
             "id": "/subscriptions/8251e869-3bec-4d80-a8ba-959e8caffb89/resourceGroups/Stuff/providers/Microsoft.Compute/galleries/vmImages/images/debian-11-slurm-20/versions/0.0.6"
@@ -249,7 +250,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat('https://', variables('diagnosticsStorageAccountName'), '.blob.core.windows.net/')]"
+                        "storageUri": "[variables('diagStorageAccountURI')]"
                     }
                 }
             },
@@ -345,7 +346,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat('https://', variables('diagnosticsStorageAccountName'), '.blob.core.windows.net/')]"
+                        "storageUri": "[variables('diagStorageAccountURI')]"
                     }
                 }
             },
