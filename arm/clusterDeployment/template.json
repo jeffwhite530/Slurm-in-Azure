@@ -1,10 +1,7 @@
 {
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    // TODO: Add a DNS name for the VM
-    // Automate the creatation of the diagnostic storage account and its name
     "parameters": {
-        // TODO: Support putting the VMs in a placement group.
         "location": {
             "type": "string"
         },

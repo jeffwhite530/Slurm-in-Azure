@@ -1,0 +1,8 @@
+  - Determine a method to set compute node's resources (CPU, mem, etc) in slurm.conf
+  - Put the VMs in a placement group
+  - Support not giving the head node a public IP
+  - Support using an existing placement group
+  - Support using an existing network/subnet
+  - Configure the diagnostic storage account to only allow access from the internal subnet
+  - Fix everything arm-ttk says is a failure
+  - Create a better and unique MariaDB password for Slurm
