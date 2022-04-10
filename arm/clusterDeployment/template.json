@@ -72,7 +72,7 @@
         "diagStorageAccountURI": "[uri(concat('https://', variables('diagnosticsStorageAccountName'), '.blob.', environment().suffixes.storage), '/')]",
         // Change variables below here as needed:
         "imgRefComputeGallery": {
-            "id": "[resourceId('8251e869-3bec-4d80-a8ba-959e8caffb89', 'Stuff', 'Microsoft.Compute/galleries/images/versions', 'vmImages', 'debian-11-slurm-20', '0.0.6')]"
+            "id": "[resourceId('8251e869-3bec-4d80-a8ba-959e8caffb89', 'Stuff', 'Microsoft.Compute/galleries/images/versions', 'vmImages', 'debian-11-slurm-20', '0.0.7')]"
         },
         "imgRefMarketplace": {
             "publisher": "debian",
