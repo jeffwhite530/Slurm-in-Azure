@@ -83,7 +83,7 @@
             "sku": "11-gen2",
             "version": "latest"
         },
-        "clusterBootrapZipURI": "[uri(concat('https://jealwhslurmconfig.', environment().suffixes.storage), '/ansible/cluster-bootstrap.zip?sp=r&st=2022-04-10T01:27:10Z&se=2023-04-10T09:27:10Z&spr=https&sv=2020-08-04&sr=b&sig=1sim3aCcDdRA2PafH0jAY%2BDNjS2vrnJPWc3qI0%2FKVTU%3D')]"
+        "clusterBootrapZipURI": "[uri(concat('https://jealwhslurmconfig.blob.', environment().suffixes.storage), '/ansible/cluster-bootstrap.zip?sp=r&st=2022-04-10T01:27:10Z&se=2023-04-10T09:27:10Z&spr=https&sv=2020-08-04&sr=b&sig=1sim3aCcDdRA2PafH0jAY%2BDNjS2vrnJPWc3qI0%2FKVTU%3D')]"
     },
     "resources": [
         {
