@@ -1,6 +1,6 @@
-This repo contains code to deploy a [Slurm](https://slurm.schedmd.com/) cluster on Azure.
+This repo contains code to deploy a [Slurm](https://slurm.schedmd.com/) cluster on [Azure](https://azure.microsoft.com/en-us/).
 
-# Building a new cluster-bootstrap zip:
+# Step 1: Build a new cluster-bootstrap zip:
 During the provisioning process of the head node VM, the VM will download a bootrap zip, extract it, and execute the cluster-bootstrap.sh script from within it. The script sets up the head node, mostly by running Ansible playbooks.
 
 This cluster-bootstrap zip must be created and made available for the VM to download prior to launching a cluster. To create one:
@@ -13,7 +13,7 @@ zip cluster-bootstrap.zip \
 ```
 Then upload the zip to the Storage Account, create a SAS key to access it, and add that URL to the variable clusterBootrapZipURI in arm/clusterDeployment/template.json.
 
-# Building a new VM image
+# Step 2: Build a new VM image
   - Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/)
   - Install [Hashicorp Packer](https://www.packer.io/)
   - `cd packer/`
@@ -23,7 +23,7 @@ Then upload the zip to the Storage Account, create a SAS key to access it, and a
   - Set the variable imgRefComputeGallery in arm/clusterDeployment/template.json to where the new image version is located.
   - Set the parameter virtualMachineSourceIsMarketplace in arm/clusterDeployment/parameters.json to false.
 
-# Deploying a new cluster:
+# Step 3: Deploy a new cluster:
   - Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/)
   - Create a VM image and cluster-bootstrap zip.
   - `cd arm/clusterDeployment`
@@ -33,23 +33,26 @@ Then upload the zip to the Storage Account, create a SAS key to access it, and a
 
 The template will have the head node VM's public DNS name in the "outputs" section of the resulting JSON output. You can SSH to it and run `sinfo` to see your new cluster.
 
-# Removing the cluster:
+# Remove the cluster:
 This will remove all cluster node VMs, their storage, all data, and all networking that was deployed with the cluster.
 
   - `az group delete --name "TestRG"`
 
 # Troubleshooting
-  - SSH to the head node
-  - `cd /var/lib/waagent/custom-script/download/0`
-  - Examine logs
-  - Optional: re-run the bootstrap: `bash ./scripts/cluster-bootstrap.sh`
-
-Verify that Slurm services are running on the head node:
-  - systemctl status mariadb
-  - systemctl status slurmdbd
-  - systemctl status lrumctld
-
-Check Slurm logs in /var/log or the system journal e.g. `journalctl -u mariadb`.
+If the cluster fails to deploy, carefully read the error Azure returns for the deployment.
+If the cluster deploys but fails to start:
+  - Log into the cluster head node VM to troubleshoot:
+  - - SSH to the head node
+  - - Become root: `sudo -i`
+  - Review the the bootstrap script logs:
+  - - Go to the Azure agent's download direcotry: `cd /var/lib/waagent/custom-script/download/0`
+  - - Examine logs
+  - - Optional: re-run the bootstrap: `bash ./scripts/cluster-bootstrap.sh`
+  - Verify that Slurm services are running on the head node:
+  - - systemctl status mariadb
+  - - systemctl status slurmdbd
+  - - systemctl status lrumctld
+  - Check Slurm logs in /var/log or the system journal e.g. `journalctl -u mariadb`.
 
 # Making changes to this code:
 
