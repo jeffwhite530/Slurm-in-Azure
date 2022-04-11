@@ -2,5 +2,4 @@
   - Support using an existing placement group
   - Support using an existing network/subnet
   - Configure the diagnostic storage account to only allow access from the internal subnet
-  - Create a better and unique MariaDB password for Slurm
   - Automate testing with arm-ttk and GitLab Actions
