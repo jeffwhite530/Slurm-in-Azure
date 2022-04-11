@@ -42,8 +42,8 @@ This will remove all cluster node VMs, their storage, all data, and all networki
 If the cluster fails to deploy, carefully read the error Azure returns for the deployment.
 If the cluster deploys but fails to start:
   1. Log into the cluster head node VM to troubleshoot:
-  1. 1. SSH to the head node
-  1. 1. Become root: `sudo -i`
+    1. SSH to the head node
+    1. Become root: `sudo -i`
   - Review the the bootstrap script logs:
   - - Go to the Azure agent's download direcotry: `cd /var/lib/waagent/custom-script/download/0`
   - - Examine logs
