@@ -7,7 +7,7 @@ cat clusterParametersSingleQuotes.json | tr "'" '"' > clusterParameters.json
 
 export ANSIBLE_HOST_KEY_CHECKING=False
 
-ansible-playbook -i 127.0.0.1, --limit 127.0.0.1 --connection=local ./ansible/cluster-headvm-config.yaml
+ansible-playbook -i 127.0.0.1, --limit 127.0.0.1 --connection=local ./ansible/cluster-headvm-config.yaml || exit 1
 
 sleep 5
 
