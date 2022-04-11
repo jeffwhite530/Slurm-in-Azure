@@ -13,7 +13,7 @@ zip cluster-bootstrap.zip \
   ansible/cluster-computevm-config.yaml
 ```
   2. Upload the zip to an Azure Storage Account.
-  3. Create a SAS key to access the file.
+  3. Optional: Create a SAS key to access the file.
   4. Add that URL to the variable clusterBootrapZipURI in arm/clusterDeployment/template.json.
 
 # Step 2: Build a new VM image
