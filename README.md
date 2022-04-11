@@ -45,14 +45,21 @@ If the cluster deploys but fails to start:
       1. SSH to the head node
       2. Become root: `sudo -i`
   2. Review the the bootstrap script logs:
-  - - Go to the Azure agent's download direcotry: `cd /var/lib/waagent/custom-script/download/0`
-  - - Examine logs
-  - - Optional: re-run the bootstrap: `bash ./scripts/cluster-bootstrap.sh`
-  - Verify that Slurm services are running on the head node:
-  - - systemctl status mariadb
-  - - systemctl status slurmdbd
-  - - systemctl status lrumctld
-  - Check Slurm logs in /var/log or the system journal e.g. `journalctl -u mariadb`.
+      1. Go to the Azure agent's download direcotry: `cd /var/lib/waagent/custom-script/download/0`
+      2. Examine logs
+      3. Optional: re-run the bootstrap: `bash ./scripts/cluster-bootstrap.sh`
+  3. Verify that Slurm services are running on the head node:
+      1. `systemctl munge status`
+      2. `systemctl status mariadb`
+      3. `systemctl status slurmdbd`
+      4. `systemctl status lrumctld`
+  4. Check the Slurm logs in /var/log or the system journal e.g. `journalctl -u mariadb`.
+  5. SSH to a compute node from the head node VM:
+      1. `ssh -i /home/deploy_user/.ssh/id_rsa deploy_user@test-cluster-computevm0-5556odnrx44oa`
+      2. Become root: `sudo -i`
+      3. Verify munge is running `systemctl status munge`
+      4. Verify Slurm is running `systemctl status slurmd`
+      5. Check the Slurm log in /var/log.
 
 # Making changes to this code:
 
