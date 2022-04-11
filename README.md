@@ -3,40 +3,43 @@ This repo contains code to deploy a [Slurm](https://slurm.schedmd.com/) cluster 
 # Step 1: Build a new cluster-bootstrap zip:
 During the provisioning process of the head node VM, the VM will download a bootrap zip, extract it, and execute the cluster-bootstrap.sh script from within it. The script sets up the head node, mostly by running Ansible playbooks.
 
-This cluster-bootstrap zip must be created and made available for the VM to download prior to launching a cluster. To create one:
+This cluster-bootstrap zip must be created and made available for the VM to download prior to launching a cluster.
 
+  1. Create the zip:
 ```
 zip cluster-bootstrap.zip \
   scripts/cluster-bootstrap.sh \
   ansible/cluster-headvm-config.yaml \
   ansible/cluster-computevm-config.yaml
 ```
-Then upload the zip to the Storage Account, create a SAS key to access it, and add that URL to the variable clusterBootrapZipURI in arm/clusterDeployment/template.json.
+  2. Upload the zip to an Azure Storage Account.
+  3. Create a SAS key to access the file.
+  4. Add that URL to the variable clusterBootrapZipURI in arm/clusterDeployment/template.json.
 
 # Step 2: Build a new VM image
-  - Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/)
-  - Install [Hashicorp Packer](https://www.packer.io/)
-  - `cd packer/`
-  - Edit debian-slurm-azure.pkr.hcl as needed.
-  - `packer init debian-slurm-azure.pkr.hcl`
-  - `packer build debian-slurm-azure.pkr.hcl`
-  - Set the variable imgRefComputeGallery in arm/clusterDeployment/template.json to where the new image version is located.
-  - Set the parameter virtualMachineSourceIsMarketplace in arm/clusterDeployment/parameters.json to false.
+  1. Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/)
+  2. Install [Hashicorp Packer](https://www.packer.io/)
+  3. `cd packer/`
+  4. Edit debian-slurm-azure.pkr.hcl as needed.
+  5. `packer init debian-slurm-azure.pkr.hcl`
+  6. `packer build debian-slurm-azure.pkr.hcl`
+  7. Set the variable imgRefComputeGallery in arm/clusterDeployment/template.json to where the new image version is located.
+  8. Set the parameter virtualMachineSourceIsMarketplace in arm/clusterDeployment/parameters.json to false.
 
 # Step 3: Deploy a new cluster:
-  - Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/)
-  - Create a VM image and cluster-bootstrap zip.
-  - `cd arm/clusterDeployment`
-  - Edit parameters.json as needed.
-  - `az group create --location "East US 2" --name "TestRG"`
-  - `az deployment group create --resource-group 'TestRG' --template-file template.json --parameters '@parameters.json'`
+  1. Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/)
+  2. Create a VM image and cluster-bootstrap zip.
+  3. `cd arm/clusterDeployment`
+  4. Edit parameters.json as needed.
+  5. `az group create --location "East US 2" --name "TestRG"`
+  6. `az deployment group create --resource-group 'TestRG' --template-file template.json --parameters '@parameters.json'`
 
 The template will have the head node VM's public DNS name in the "outputs" section of the resulting JSON output. You can SSH to it and run `sinfo` to see your new cluster.
 
 # Remove the cluster:
 This will remove all cluster node VMs, their storage, all data, and all networking that was deployed with the cluster.
 
-  - `az group delete --name "TestRG"`
+  1. `az group delete --name "TestRG"`
 
 # Troubleshooting
 If the cluster fails to deploy, carefully read the error Azure returns for the deployment.
@@ -64,17 +67,17 @@ If the cluster deploys but fails to start:
 # Making changes to this code:
 
 ## Run arm-ttk
-  - Clone the [ARM Template Toolkit](https://github.com/Azure/arm-ttk)
-  - Install [PowerShell](https://docs.microsoft.com/en-us/powershell/)
-  - `pwsh`
-  - `cd arm-ttk`
-  - `Test-AzTemplate -TemplatePath ../../azure-slurm/arm/clusterDeployment/template.json`
+  1. Clone the [ARM Template Toolkit](https://github.com/Azure/arm-ttk)
+  2. Install [PowerShell](https://docs.microsoft.com/en-us/powershell/)
+  3. `pwsh`
+  4. `cd arm-ttk`
+  5. `Test-AzTemplate -TemplatePath ../../azure-slurm/arm/clusterDeployment/template.json`
 
 ## Run the Ansible linter
-  - Install [Ansible Lint](https://ansible-lint.readthedocs.io/en/latest/)
-  - `ansible-lint lint ansible/*.yaml`
+  1. Install [Ansible Lint](https://ansible-lint.readthedocs.io/en/latest/)
+  2. `ansible-lint lint ansible/*.yaml`
 
 ## Run Packer validate
-  - Install [Hashicorp Packer](https://www.packer.io/)
-  - `cd packer`
-  - `packer validate debian-slurm-azure.pkr.hcl`
+  1. Install [Hashicorp Packer](https://www.packer.io/)
+  2. `cd packer`
+  3. `packer validate debian-slurm-azure.pkr.hcl`
