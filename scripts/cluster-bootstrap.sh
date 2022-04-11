@@ -9,8 +9,6 @@ export ANSIBLE_HOST_KEY_CHECKING=False
 
 ansible-playbook -i 127.0.0.1, --limit 127.0.0.1 --connection=local ./ansible/cluster-headvm-config.yaml || exit 1
 
-sleep 5
-
 ansible-playbook -i ./ansible/compute_hosts ./ansible/cluster-computevm-config.yaml
 
 systemctl restart slurmctld
