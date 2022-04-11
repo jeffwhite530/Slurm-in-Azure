@@ -38,13 +38,28 @@
       state: started
       enabled: true
 
+  - name: Find existing Slurm MariaDB password
+    ansible.builtin.command: awk -F= '/StoragePass/ {print $2}' /etc/slurm/slurmdbd.conf
+    register: awk_for_mariadb_slurm_password
+    failed_when: false
+    changed_when: false
+
+  - name: Set existing Slurm MariaDB password to an Ansible fact
+    ansible.builtin.set_fact:
+      mariadb_slurm_password: "{{ awk_for_mariadb_slurm_password.stdout }}"
+
+  - name: Create new MariaDB password
+    ansible.builtin.set_fact:
+      mariadb_slurm_password: "{{ lookup('password', '/dev/null', seed=vm_instance_metadata.json.compute.name) }}"
+    when: mariadb_slurm_password == ""
+
   - name: Create Slurm user in MariaDB
     community.mysql.mysql_user:
       name: slurm_db_user
-      # FIXME: Set a better password, custom for each cluster install
-      password: 12345
+      password: "{{ mariadb_slurm_password }}"
       priv: '*.*:ALL'
       state: present
+      update_password: on_create
       login_unix_socket: /var/run/mysqld/mysqld.sock
 
   - name: Create slurmctld spool directory
@@ -240,7 +255,7 @@
         LogFile=/var/log/slurmdbd.log
         PidFile=/var/run/slurmdbd.pid
         SlurmUser=slurm
-        StoragePass=12345
+        StoragePass={{ mariadb_slurm_password }}
         StorageType=accounting_storage/mysql
         StorageUser=slurm_db_user
 
