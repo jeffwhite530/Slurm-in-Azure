@@ -20,7 +20,11 @@
         // TODO: Switch between StandardSSD_LRS and premuim based on dev vs prod deployment type
         "headVMOSDiskType": {
             "type": "string",
-            "defaultValue": "StandardSSD_LRS"
+            "defaultValue": "StandardSSD_LRS",
+            "allowedValues": [
+                "StandardSSD_LRS",
+                "Premium_LRS"
+            ]
         },
         "headVMIsSpotInstance": {
             "type": "bool",
@@ -32,7 +36,11 @@
         },
         "computeVMOSDiskType": {
             "type": "string",
-            "defaultValue": "StandardSSD_LRS"
+            "defaultValue": "StandardSSD_LRS",
+            "allowedValues": [
+                "StandardSSD_LRS",
+                "Premium_LRS"
+            ]
         },
         "computeVMIsSpotInstance": {
             "type": "bool",
