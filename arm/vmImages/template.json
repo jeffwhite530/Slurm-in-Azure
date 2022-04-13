@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "galleryName": {
@@ -40,7 +40,7 @@
     "resources": [
         {
             "type": "Microsoft.Compute/galleries",
-            "apiVersion": "2019-03-01",
+            "apiVersion": "2022-01-03",
             "name": "[parameters('galleryName')]",
             "location": "[parameters('location')]",
             "tags": {},
@@ -75,7 +75,7 @@
         },
         {
             "type": "Microsoft.Resources/resourceGroups",
-            "apiVersion": "2018-05-01",
+            "apiVersion": "2019-05-01",
             "location": "[parameters('Location')]",
             "name": "packerVirtualMachineImages",
             "properties": {}
