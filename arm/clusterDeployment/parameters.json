@@ -9,6 +9,8 @@
         "clusterName": {
             "value": "test-cluster"
         },
+        // Add rules to the Network Security Group. Without a rule place allowing access, you will 
+        // not be able to SSH to the head node VM.
         "networkSecurityGroupRules": {
             "value": [
                 {
@@ -20,19 +22,23 @@
                         "direction": "Inbound",
                         "sourceApplicationSecurityGroups": [],
                         "destinationApplicationSecurityGroups": [],
-                        "sourceAddressPrefix": "71.112.204.20",
+                        "sourceAddressPrefix": "YOUR-LAPTOP-PUBLIC-IP-OR-YOUR-BASTION-HOST-SUBNET",
                         "sourcePortRange": "*",
+                        // Destination should match the parameter addressPrefixes
                         "destinationAddressPrefix": "*",
                         "destinationPortRange": "22"
                     }
                 }
             ]
         },
+        // addressPrefixes can be any private addess space which is unused in your network. It must be
+        // large enough to contain all head and compute nodes you plan to deploy.
         "addressPrefixes": {
             "value": [
                 "10.200.0.0/22"
             ]
         },
+        // All nodes will be deployed to the first subnet listed in this value.
         "subnets": {
             "value": [
                 {
@@ -43,26 +49,21 @@
                 }
             ]
         },
-        "headVMIsSpotInstance": {
-            "value": true
-        },
-        "virtualMachineSourceIsMarketplace": {
-            "value": false
-        },
         "headVMSize": {
             "value": "Standard_E2bs_v5"
         },
         "computeVMSize": {
             "value": "Standard_E2bs_v5"
         },
+        // Set to 0 to only deploy a head node VM, but note that slurmctl will fail to start in this case.
         "computeVMCount": {
             "value": 1
         },
         "adminUsername": {
-            "value": "jeffwhite"
+            "value": "YOUR-USERNAME"
         },
         "adminPublicKey": {
-            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC60phmlZPN3l+73auqWjOTLzNXGe4mILMdsTnnYmRaE8XXgCSlUMfqBWQwyB3oVNWgttI/6htCrbvtZgW2/6rs57pzF27QwOLB9uijha2Sm3SpKfOATXny3ypganh8Mqd4y31MvNwLqEoUNM6324O7T/2sQwGGMJdN1FvtAwbgTpNNyo57W6iM6KkcKTT08Hl7lNtTf4qtPm0qK2vMvMrQPe4Qx/qaq9uP2+KKIGt2lj9rrhE022XB1jtjecYH675aScXcx3N8MWuaN5ETyPNzt1Skwa58iSy8CTizoHhw+zh/o+xhzlmx8GJ1ilKYz8bsaS6CDD4HqMU4YcGgJlM2dYdo4S5kUIFrv4UO8315FU1bazNEmNkPDxOzRFEMupGWXNIBw3FD0BhJOH+eGJhl3RYUNzFoJLkJXh1AkErhd0aanj1n4e4+yVlve+sKAuqWktqa1+9hDzBxHDa9aKw2R3qRahQ88WzJfyiJPf9m7XoS2zwxK0Jni+5Rq1qqzFs="
+            "value": "YOUR-PUBLIC-SSH-KEY"
         }
     }
 }

@@ -56,7 +56,7 @@
         },
         "virtualMachineSourceIsMarketplace": {
             "type": "bool",
-            "defaultValue": true
+            "defaultValue": false
         },
         "adminUsername": {
             "type": "string"
@@ -76,9 +76,11 @@
         "networkSecurityGroupName": "[concat(parameters('clusterName'), '-nsg-', uniqueString(guid(resourceGroup().id)))]",
         "nsgId": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
         "proximityPlacementGroupName": "[concat(parameters('clusterName'), '-ppg-', uniqueString(guid(resourceGroup().id)))]",
-        "clusterParameters": "[union(deployment().properties.parameters, deployment().properties.template.parameters)]",
         "diagStorageAccountURI": "[uri(concat('https://', variables('diagnosticsStorageAccountName'), '.blob.', environment().suffixes.storage), '/')]",
-        // Change variables below here as needed:
+        "clusterParameters": "[union(deployment().properties.parameters, deployment().properties.template.parameters)]",
+        // Change variables below here as needed.
+        //
+        // resourceId(subscription_id, resource_group, type, compute_gallery, image_definition, image_version)
         "imgRefComputeGallery": {
             "id": "[resourceId('8251e869-3bec-4d80-a8ba-959e8caffb89', 'Stuff', 'Microsoft.Compute/galleries/images/versions', 'vmImages', 'debian-11-slurm-20', '0.0.7')]"
         },
@@ -88,6 +90,7 @@
             "sku": "11-gen2",
             "version": "latest"
         },
+        // The URL must be structured this way to pass ARM-TTK tests.
         "clusterBootrapZipURI": "[uri(concat('https://jealwhslurmconfig.blob.', environment().suffixes.storage), '/ansible/cluster-bootstrap.zip?sp=r&st=2022-04-10T01:27:10Z&se=2023-04-10T09:27:10Z&spr=https&sv=2020-08-04&sr=b&sig=1sim3aCcDdRA2PafH0jAY%2BDNjS2vrnJPWc3qI0%2FKVTU%3D')]"
     },
     "resources": [
