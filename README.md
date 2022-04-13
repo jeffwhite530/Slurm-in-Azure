@@ -55,7 +55,7 @@ If the cluster deploys but fails to start:
       1. `systemctl munge status`
       2. `systemctl status mariadb`
       3. `systemctl status slurmdbd`
-      4. `systemctl status lrumctld`
+      4. `systemctl status slurmctld`
   4. Check the Slurm logs in /var/log or the system journal e.g. `journalctl -u mariadb`.
   5. SSH to a compute node from the head node VM:
       1. `ssh -i /home/deploy_user/.ssh/id_rsa deploy_user@test-cluster-computevm0-5556odnrx44oa`
