@@ -52,7 +52,7 @@ If the cluster deploys but fails to start:
       2. Examine logs
       3. Optional: re-run the bootstrap: `bash ./scripts/cluster-bootstrap.sh`
   3. Verify that Slurm services are running on the head node:
-      1. `systemctl munge status`
+      1. `systemctl status munge`
       2. `systemctl status mariadb`
       3. `systemctl status slurmdbd`
       4. `systemctl status slurmctld`
